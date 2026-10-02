@@ -1,7 +1,14 @@
-from resemblyzer import VoiceEncoder, preprocess_wav
+try:
+    from resemblyzer import VoiceEncoder, preprocess_wav
+except ModuleNotFoundError:
+    VoiceEncoder = None
+    preprocess_wav = None
 import numpy as np 
 import io
-import librosa
+try:
+    import librosa
+except ModuleNotFoundError:
+    librosa = None
 import streamlit as st
 
 

@@ -1,7 +1,9 @@
 import streamlit as st
 
-from src.pipelines.voice_pipeline import process_bulk_audio
-
+try:
+    from src.pipelines.voice_pipeline import process_bulk_audio
+except ModuleNotFoundError:
+    process_bulk_audio = None
 from src.database.config import supabase
 
 import pandas as pd
