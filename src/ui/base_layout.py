@@ -38,13 +38,17 @@ def style_base_layout():
     st.markdown("""
         <style>
 
-            /* Google Fonts */
+            /* ============================= */
+            /* GOOGLE FONTS */
+            /* ============================= */
 
             @import url('https://fonts.googleapis.com/css2?family=Climate+Crisis:YEAR@1979&display=swap');
             @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 
-            /* Hide Streamlit default UI */
+            /* ============================= */
+            /* HIDE STREAMLIT DEFAULT UI */
+            /* ============================= */
 
             #MainMenu,
             footer,
@@ -53,14 +57,18 @@ def style_base_layout():
             }
 
 
-            /* Main container */
+            /* ============================= */
+            /* MAIN CONTAINER */
+            /* ============================= */
 
             .block-container {
                 padding-top: 1.5rem !important;
             }
 
 
-            /* Main headings */
+            /* ============================= */
+            /* HEADINGS */
+            /* ============================= */
 
             h1,
             h2 {
@@ -80,21 +88,19 @@ def style_base_layout():
             }
 
 
-            /* All normal text */
+            /* ============================= */
+            /* NORMAL TEXT */
+            /* ============================= */
 
-            h3,
-            h4,
-            h5,
-            h6,
             p,
-            label,
-            span,
-            div {
+            label {
                 font-family: 'Outfit', sans-serif !important;
             }
 
 
-            /* Streamlit text elements */
+            /* ============================= */
+            /* STREAMLIT TEXT */
+            /* ============================= */
 
             [data-testid="stCaptionContainer"],
             [data-testid="stMarkdownContainer"],
@@ -104,7 +110,9 @@ def style_base_layout():
             }
 
 
-            /* Inputs */
+            /* ============================= */
+            /* INPUTS */
+            /* ============================= */
 
             input,
             textarea,
@@ -113,88 +121,155 @@ def style_base_layout():
             }
 
 
-            /* Selectbox */
+            /* ============================= */
+            /* SELECTBOX */
+            /* ============================= */
 
             div[data-baseweb="select"] * {
                 font-family: 'Outfit', sans-serif !important;
             }
 
 
-            /* Buttons */
+            /* ============================= */
+            /* BUTTON CONTAINER */
+            /* ============================= */
 
-            button {
+            div[data-testid="stButton"] {
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+
+            /* ============================= */
+            /* NORMAL STREAMLIT BUTTONS */
+            /* ============================= */
+
+            .stButton > button {
                 font-family: 'Outfit', sans-serif !important;
                 border-radius: 1.5rem !important;
                 background-color: #5865F2 !important;
                 color: white !important;
                 padding: 10px 20px !important;
                 border: none !important;
-                transition: transform 0.25s ease-in-out !important;
+                min-height: 45px !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                transform: none !important;
+            }
+
+            .stButton > button p {
+                color: white !important;
+                font-family: 'Outfit', sans-serif !important;
             }
 
 
-            /* Secondary buttons */
+            /* ============================= */
+            /* PRIMARY BUTTON */
+            /* ============================= */
 
-            button[kind="secondary"] {
-                font-family: 'Outfit', sans-serif !important;
-                border-radius: 1.5rem !important;
+            .stButton > button[kind="primary"] {
+                background-color: #5865F2 !important;
+                color: white !important;
+            }
+
+
+            /* ============================= */
+            /* SECONDARY BUTTON */
+            /* ============================= */
+
+            .stButton > button[kind="secondary"] {
                 background-color: #EB459E !important;
                 color: white !important;
-                padding: 10px 20px !important;
-                border: none !important;
             }
 
 
-            /* Tertiary buttons */
+            /* ============================= */
+            /* TERTIARY BUTTON */
+            /* ============================= */
 
-            button[kind="tertiary"] {
-                font-family: 'Outfit', sans-serif !important;
-                border-radius: 1.5rem !important;
+            .stButton > button[kind="tertiary"] {
                 background-color: black !important;
                 color: white !important;
-                padding: 10px 20px !important;
+            }
+
+
+            /* ============================= */
+            /* BUTTON HOVER */
+            /* ============================= */
+
+            .stButton > button:hover {
+                transform: none !important;
+                margin: 0 !important;
+            }
+
+
+            /* ============================= */
+            /* CAMERA INPUT */
+            /* ============================= */
+
+            div[data-testid="stCameraInput"] button {
+                background-color: #5865F2 !important;
+                color: white !important;
                 border: none !important;
+                border-radius: 1.5rem !important;
+                font-family: 'Outfit', sans-serif !important;
+                box-sizing: border-box !important;
             }
 
-
-            /* Button hover */
-
-            button:hover {
-                transform: scale(1.05);
-            }
-
-
-            /* Tabs */
-
-            button[data-baseweb="tab"] {
+            div[data-testid="stCameraInput"] button p {
+                color: white !important;
                 font-family: 'Outfit', sans-serif !important;
             }
 
+            div[data-testid="stCameraInput"] button:hover {
+                background-color: #4752C4 !important;
+                color: white !important;
+            }
 
-            /* File uploader */
+
+            /* ============================= */
+            /* FILE UPLOADER */
+            /* ============================= */
 
             section[data-testid="stFileUploader"] * {
                 font-family: 'Outfit', sans-serif !important;
             }
 
 
-            /* Radio buttons */
+            /* ============================= */
+            /* RADIO BUTTONS */
+            /* ============================= */
 
             div[data-testid="stRadio"] * {
                 font-family: 'Outfit', sans-serif !important;
             }
 
 
-            /* Checkboxes */
+            /* ============================= */
+            /* CHECKBOXES */
+            /* ============================= */
 
             div[data-testid="stCheckbox"] * {
                 font-family: 'Outfit', sans-serif !important;
             }
 
 
-            /* Metrics */
+            /* ============================= */
+            /* METRICS */
+            /* ============================= */
 
             div[data-testid="stMetric"] * {
+                font-family: 'Outfit', sans-serif !important;
+            }
+
+
+            /* ============================= */
+            /* TABS */
+            /* ============================= */
+
+            button[data-baseweb="tab"] {
                 font-family: 'Outfit', sans-serif !important;
             }
 

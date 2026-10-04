@@ -17,7 +17,6 @@ def check_pass(pwd, hashed):
 
 
 def check_teacher_exists(username):
-
     response = (
         supabase
         .table("teachers")
@@ -30,7 +29,6 @@ def check_teacher_exists(username):
 
 
 def create_teacher(username, password, name):
-
     data = {
         "username": username,
         "password": hash_pass(password),
@@ -48,7 +46,6 @@ def create_teacher(username, password, name):
 
 
 def teacher_login(username, password):
-
     response = (
         supabase
         .table("teachers")
@@ -58,12 +55,11 @@ def teacher_login(username, password):
     )
 
     if response.data:
-
         teacher = response.data[0]
 
         if check_pass(
             password,
-            teacher['password']
+            teacher["password"]
         ):
             return teacher
 
@@ -71,10 +67,9 @@ def teacher_login(username, password):
 
 
 def get_all_students():
-
     response = (
         supabase
-        .table('students')
+        .table("students")
         .select("*")
         .execute()
     )
@@ -87,17 +82,36 @@ def create_student(
     face_embedding=None,
     voice_embedding=None
 ):
-
     data = {
-        'name': new_name,
-        'face_embedding': face_embedding,
-        'voice_embedding': voice_embedding
+        "name": new_name,
+        "face_embedding": face_embedding,
+        "voice_embedding": voice_embedding
     }
 
     response = (
         supabase
-        .table('students')
+        .table("students")
         .insert(data)
+        .execute()
+    )
+
+    return response.data
+
+
+def update_student_voice_embedding(
+    student_id,
+    voice_embedding
+):
+    response = (
+        supabase
+        .table("students")
+        .update({
+            "voice_embedding": voice_embedding
+        })
+        .eq(
+            "student_id",
+            student_id
+        )
         .execute()
     )
 
@@ -110,7 +124,6 @@ def create_subject(
     section,
     teacher_id
 ):
-
     data = {
         "subject_code": subject_code,
         "name": name,
@@ -129,10 +142,9 @@ def create_subject(
 
 
 def get_teacher_subjects(teacher_id):
-
     response = (
         supabase
-        .table('subjects')
+        .table("subjects")
         .select(
             "*, subject_students(count), attendance_logs(timestamp)"
         )
@@ -146,13 +158,12 @@ def get_teacher_subjects(teacher_id):
     subjects = response.data
 
     for sub in subjects:
-
-        sub['total_students'] = (
+        sub["total_students"] = (
             sub.get(
                 "subject_students",
                 [{}]
             )[0].get(
-                'count',
+                "count",
                 0
             )
             if sub.get("subject_students")
@@ -160,26 +171,26 @@ def get_teacher_subjects(teacher_id):
         )
 
         attendance = sub.get(
-            'attendance_logs',
+            "attendance_logs",
             []
         )
 
         unique_sessions = len(
             set(
-                log['timestamp']
+                log["timestamp"]
                 for log in attendance
             )
         )
 
-        sub['total_classes'] = unique_sessions
+        sub["total_classes"] = unique_sessions
 
         sub.pop(
-            'subject_student',
+            "subject_student",
             None
         )
 
         sub.pop(
-            'attendance_logs',
+            "attendance_logs",
             None
         )
 
@@ -190,15 +201,14 @@ def enroll_student_to_subject(
     student_id,
     subject_id
 ):
-
     data = {
-        'student_id': student_id,
-        'subject_id': subject_id
+        "student_id": student_id,
+        "subject_id": subject_id
     }
 
     response = (
         supabase
-        .table('subject_students')
+        .table("subject_students")
         .insert(data)
         .execute()
     )
@@ -210,17 +220,16 @@ def unenroll_student_to_subject(
     student_id,
     subject_id
 ):
-
     response = (
         supabase
-        .table('subject_students')
+        .table("subject_students")
         .delete()
         .eq(
-            'student_id',
+            "student_id",
             student_id
         )
         .eq(
-            'subject_id',
+            "subject_id",
             subject_id
         )
         .execute()
@@ -230,13 +239,12 @@ def unenroll_student_to_subject(
 
 
 def get_student_subjects(student_id):
-
     response = (
         supabase
-        .table('subject_students')
-        .select('*, subjects(*)')
+        .table("subject_students")
+        .select("*, subjects(*)")
         .eq(
-            'student_id',
+            "student_id",
             student_id
         )
         .execute()
@@ -246,13 +254,12 @@ def get_student_subjects(student_id):
 
 
 def get_student_attendance(student_id):
-
     response = (
         supabase
-        .table('attendance_logs')
-        .select('*, subjects(*)')
+        .table("attendance_logs")
+        .select("*, subjects(*)")
         .eq(
-            'student_id',
+            "student_id",
             student_id
         )
         .execute()
@@ -262,10 +269,9 @@ def get_student_attendance(student_id):
 
 
 def create_attendance(logs):
-
     response = (
         supabase
-        .table('attendance_logs')
+        .table("attendance_logs")
         .insert(logs)
         .execute()
     )
@@ -274,15 +280,14 @@ def create_attendance(logs):
 
 
 def get_attendance_for_teacher(teacher_id):
-
     response = (
         supabase
-        .table('attendance_logs')
+        .table("attendance_logs")
         .select(
             "*, subjects!inner(*)"
         )
         .eq(
-            'subjects.teacher_id',
+            "subjects.teacher_id",
             teacher_id
         )
         .execute()
@@ -295,7 +300,6 @@ def delete_subject(
     subject_id,
     teacher_id
 ):
-
     # Verify that this subject belongs to this teacher
     subject_response = (
         supabase

@@ -1,9 +1,6 @@
 import streamlit as st
 
-from src.ui.base_layout import (
-    style_background_dashboard,
-    style_base_layout
-)
+from src.ui.base_layout import style_background_dashboard, style_base_layout
 from src.components.header import header_dashboard
 from src.components.footer import footer_dashboard
 
@@ -21,7 +18,6 @@ from src.pipelines.voice_pipeline import get_voice_embedding
 from src.database.db import (
     get_all_students,
     create_student,
-    update_student_voice_embedding,
     get_student_subjects,
     get_student_attendance,
     unenroll_student_to_subject
@@ -46,9 +42,7 @@ def student_dashboard():
         header_dashboard()
 
     with c2:
-        st.subheader(
-            f"Welcome, {student_data['name']} 👋"
-        )
+        st.subheader(f"Welcome, {student_data['name']} 👋")
 
         if st.button(
             "Logout",
@@ -60,110 +54,15 @@ def student_dashboard():
             del st.session_state.student_data
             st.rerun()
 
-    # ==============================
-    # VOICE PROFILE
-    # ==============================
-
-    with st.expander("Voice Profile"):
-
-        st.caption(
-            "Register your voice so teachers can use Voice Attendance."
-        )
-
-        audio_data = st.audio_input(
-            "Record your voice",
-            key="student_voice_profile"
-        )
-
-        if st.button(
-            "Save Voice Profile",
-            type="primary",
-            width="stretch",
-            key="save_voice_profile"
-        ):
-
-            if audio_data is None:
-
-                st.warning(
-                    "Please record your voice first."
-                )
-
-            else:
-
-                with st.spinner(
-                    "Creating your voice profile..."
-                ):
-
-                    try:
-
-                        audio_bytes = audio_data.read()
-
-                        voice_emb = get_voice_embedding(
-                            audio_bytes
-                        )
-
-                        if voice_emb is None:
-
-                            st.error(
-                                "Could not create a voice profile. "
-                                "Please record your voice again."
-                            )
-
-                        else:
-
-                            if hasattr(
-                                voice_emb,
-                                "tolist"
-                            ):
-                                voice_emb = voice_emb.tolist()
-
-                            response = (
-                                update_student_voice_embedding(
-                                    student_id,
-                                    voice_emb
-                                )
-                            )
-
-                            if response:
-
-                                st.session_state.student_data[
-                                    "voice_embedding"
-                                ] = voice_emb
-
-                                st.success(
-                                    "Voice profile saved successfully!"
-                                )
-
-                            else:
-
-                                st.error(
-                                    "Could not save your voice profile."
-                                )
-
-                    except Exception as e:
-
-                        st.error(
-                            f"Voice profile failed: {str(e)}"
-                        )
-
-    # ==============================
-    # SUBJECTS
-    # ==============================
-
     st.space()
 
     c1, c2 = st.columns(2)
 
     with c1:
-
         st.header("Your Subjects")
-
-        st.caption(
-            "View your enrolled subjects and attendance."
-        )
+        st.caption("View your enrolled subjects and attendance.")
 
     with c2:
-
         if st.button(
             "Enroll in Subject",
             type="primary",
@@ -174,17 +73,9 @@ def student_dashboard():
 
     st.divider()
 
-    with st.spinner(
-        "Loading your enrolled subjects..."
-    ):
-
-        subjects = get_student_subjects(
-            student_id
-        )
-
-        logs = get_student_attendance(
-            student_id
-        )
+    with st.spinner("Loading your enrolled subjects..."):
+        subjects = get_student_subjects(student_id)
+        logs = get_student_attendance(student_id)
 
     stats_map = {}
 
@@ -193,7 +84,6 @@ def student_dashboard():
         sid = log["subject_id"]
 
         if sid not in stats_map:
-
             stats_map[sid] = {
                 "total": 0,
                 "attended": 0
@@ -202,7 +92,6 @@ def student_dashboard():
         stats_map[sid]["total"] += 1
 
         if log.get("is_present"):
-
             stats_map[sid]["attended"] += 1
 
     if not subjects:
@@ -235,10 +124,10 @@ def student_dashboard():
             ):
 
                 if st.button(
-                    "Unenroll",
-                    type="secondary",
+                    "Unenroll from this subject",
+                    type="tertiary",
                     width="stretch",
-                    icon=":material/delete_outline:",
+                    icon=":material/delete_forever:",
                     key=f"unenroll_{subject_id}"
                 ):
 
@@ -260,16 +149,8 @@ def student_dashboard():
                     code=sub["subject_code"],
                     section=sub["section"],
                     stats=[
-                        (
-                            "📅",
-                            "Total",
-                            stats["total"]
-                        ),
-                        (
-                            "✅",
-                            "Attended",
-                            stats["attended"]
-                        )
+                        ("📅", "Total", stats["total"]),
+                        ("✅", "Attended", stats["attended"])
                     ],
                     footer_callback=unenroll_button
                 )
@@ -282,19 +163,9 @@ def student_screen():
     style_background_dashboard()
     style_base_layout()
 
-    # ==============================
-    # ALREADY LOGGED IN
-    # ==============================
-
     if "student_data" in st.session_state:
-
         student_dashboard()
-
         return
-
-    # ==============================
-    # LOGIN HEADER
-    # ==============================
 
     c1, c2 = st.columns(
         2,
@@ -303,7 +174,6 @@ def student_screen():
     )
 
     with c1:
-
         header_dashboard()
 
     with c2:
@@ -314,14 +184,8 @@ def student_screen():
             key="loginbackbtn",
             shortcut="control+backspace"
         ):
-
             st.session_state["login_type"] = None
-
             st.rerun()
-
-    # ==============================
-    # STUDENT LOGIN
-    # ==============================
 
     st.header(
         "Student Login",
@@ -347,13 +211,9 @@ def student_screen():
             Image.open(photo_source)
         )
 
-        with st.spinner(
-            "AI is scanning your face..."
-        ):
+        with st.spinner("AI is scanning your face..."):
 
-            detected, all_ids, num_faces = (
-                predict_attendance(img)
-            )
+            detected, all_ids, num_faces = predict_attendance(img)
 
             if num_faces == 0:
 
@@ -364,8 +224,7 @@ def student_screen():
             elif num_faces > 1:
 
                 st.warning(
-                    "Multiple faces found. "
-                    "Please make sure only one person is visible."
+                    "Multiple faces found. Please make sure only one person is visible."
                 )
 
             else:
@@ -399,33 +258,24 @@ def student_screen():
                         )
 
                         time.sleep(1)
-
                         st.rerun()
 
                 else:
 
                     st.info(
-                        "Face not recognized. "
-                        "You can register as a new student below."
+                        "Face not recognized. You can register as a new student below."
                     )
 
                     show_registration = True
-
-    # ==============================
-    # NEW STUDENT REGISTRATION
-    # ==============================
 
     if show_registration:
 
         with st.container(border=True):
 
-            st.header(
-                "Create Student Profile"
-            )
+            st.header("Create Student Profile")
 
             st.caption(
-                "Register your face so SnapClass can "
-                "recognize you in the future."
+                "Register your face so SnapClass can recognize you in the future."
             )
 
             new_name = st.text_input(
@@ -433,13 +283,10 @@ def student_screen():
                 placeholder="Enter your full name"
             )
 
-            st.subheader(
-                "Optional: Voice Enrollment"
-            )
+            st.subheader("Optional: Voice Enrollment")
 
             st.info(
-                "You can also enroll your voice "
-                "for voice-based attendance."
+                "You can also enroll your voice for voice-based attendance."
             )
 
             audio_data = None
@@ -472,9 +319,7 @@ def student_screen():
                             Image.open(photo_source)
                         )
 
-                        encodings = get_face_embeddings(
-                            img
-                        )
+                        encodings = get_face_embeddings(img)
 
                         if encodings:
 
@@ -484,19 +329,9 @@ def student_screen():
 
                             if audio_data:
 
-                                voice_emb = (
-                                    get_voice_embedding(
-                                        audio_data.read()
-                                    )
+                                voice_emb = get_voice_embedding(
+                                    audio_data.read()
                                 )
-
-                                if hasattr(
-                                    voice_emb,
-                                    "tolist"
-                                ):
-                                    voice_emb = (
-                                        voice_emb.tolist()
-                                    )
 
                             response_data = create_student(
                                 new_name,
@@ -510,9 +345,7 @@ def student_screen():
 
                                 st.session_state.is_logged_in = True
                                 st.session_state.user_role = "student"
-                                st.session_state.student_data = (
-                                    response_data[0]
-                                )
+                                st.session_state.student_data = response_data[0]
 
                                 st.toast(
                                     f"Profile created! Welcome, {new_name}!",
@@ -520,14 +353,12 @@ def student_screen():
                                 )
 
                                 time.sleep(1)
-
                                 st.rerun()
 
                         else:
 
                             st.error(
-                                "Could not capture your facial features. "
-                                "Please try again."
+                                "Could not capture your facial features. Please try again."
                             )
 
                 else:
