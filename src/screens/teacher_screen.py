@@ -11,10 +11,12 @@ from src.database.db import (
     create_teacher,
     teacher_login,
     get_teacher_subjects,
-    get_attendance_for_teacher
+    get_attendance_for_teacher,
+    delete_subject
 )
 
 from src.components.dialog_create_subject import create_subject_dialog
+from src.components.dialog_delete_subject import delete_subject_dialog
 from src.components.dialog_share_subject import share_subject_dialog
 from src.components.dialog_add_photo import add_photos_dialog
 
@@ -177,9 +179,36 @@ def teacher_tab_take_attendance():
 
         return
 
+    sections = sorted(list(set(
+        str(s.get('section', '')).strip()
+        for s in subjects
+        if s.get('section')
+    )))
+
+    if not sections:
+        st.warning('No sections found for your subjects.')
+        return
+
+    selected_section = st.selectbox(
+        'Select Section',
+        options=sections,
+        key='attendance_section'
+    )
+
+    section_subjects = [
+        s for s in subjects
+        if str(s.get('section', '')).strip() == selected_section
+    ]
+
+    if not section_subjects:
+        st.warning(
+            f'No subjects found for Section {selected_section}.'
+        )
+        return
+
     subject_options = {
         f"{s['name']} - {s['subject_code']}": s['subject_id']
-        for s in subjects
+        for s in section_subjects
     }
 
     col1, col2 = st.columns(
@@ -423,18 +452,32 @@ def teacher_tab_manage_subjects():
 
             def share_btn(
                 subject_name=sub['name'],
-                subject_code=sub['subject_code']
+                subject_code=sub['subject_code'],
+                subject_id=sub['subject_id']
             ):
 
                 if st.button(
                     f"Share Code: {subject_name}",
-                    key=f"share_{subject_code}",
+                    key=f"share_{subject_code}_{subject_id}",
                     icon=":material/share:"
                 ):
 
                     share_subject_dialog(
                         subject_name,
                         subject_code
+                    )
+
+                if st.button(
+                    f"Delete: {subject_name}",
+                    key=f"delete_{subject_code}_{subject_id}",
+                    type="secondary",
+                    icon=":material/delete:"
+                ):
+
+                    delete_subject_dialog(
+                        subject_id,
+                        subject_name,
+                        teacher_id
                     )
 
                 st.space()
