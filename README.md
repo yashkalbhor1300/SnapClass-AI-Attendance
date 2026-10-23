@@ -159,5 +159,4 @@ streamlit run app.py
 ## Author
 
    **Yash Kalbhor** | B.Tech CSE (AI & Analytics) | MIT ADT University, Pune
-
 GitHub: https://github.com/yashkalbhor1300
