@@ -121,15 +121,15 @@ pip install -r requirements.txt
 
 > `dlib` can be difficult to build on Windows. If installation fails, install the Visual Studio C++ Build Tools and CMake first, or use a pre-built `dlib` wheel that matches your Python version.
 
-**4. Add your Supabase credentials**
+**4. Add your Supabase key**
 
 Create the file `.streamlit/secrets.toml` in the project root. This file is listed in `.gitignore` and must never be committed.
 
 ```toml
-# Replace the key names with the ones used in src/database/config.py
-SUPABASE_URL = "your-project-url"
-SUPABASE_KEY = "your-supabase-key"
+SUPABASE_KEY = "your-supabase-anon-key"
 ```
+
+The Supabase project URL is set in `src/database/config.py`. To run SnapClass with your own Supabase project, replace the URL there with your own and make sure the tables described in the Database section exist.
 
 **5. Run the app**
 
@@ -141,7 +141,8 @@ streamlit run app.py
 
 ## Security Notes
 
-- Supabase credentials are stored in `.streamlit/secrets.toml` and excluded from Git.
+- The Supabase key is stored in `.streamlit/secrets.toml` and excluded from Git.
+- Use the Supabase **anon (public) key** for this app, never the `service_role` key.
 - Teacher passwords are hashed with bcrypt.
 - Face and voice data are biometric data. Anyone deploying this project for real use should get consent from users and follow applicable privacy rules.
 
