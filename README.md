@@ -8,8 +8,6 @@ SnapClass is a face-recognition attendance application with separate **Student**
 
 ## Screenshots
 
-> Add your screenshots to a `screenshots/` folder and replace the file names below.
-
 | Student Portal | Teacher Dashboard |
 |---|---|
 | ![Student portal](screenshots/student-portal.png) | ![Teacher dashboard](screenshots/teacher-dashboard.png) |
